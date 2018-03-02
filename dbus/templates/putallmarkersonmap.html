@@ -1,0 +1,108 @@
+<!DOCTYPE>  
+<html> 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+        google.load("maps", "3",{other_params:"sensor=false&libraries=geometry"});
+      </script>
+
+<body style="margin:0px; padding:0px;" >
+ 
+ <select id="radius_km">
+	 <option value=1>1km</option>
+	 <option value=2>2km</option>
+	 <option value=5>5km</option>
+	 <option value=30>30km</option>
+ </select>
+    <button onclick="showCloseLocations()">ok</button>
+    <div id="map_canvas"  style="width:500px; height:300px;"></div>
+</body>   
+</html>
+
+<script>
+ 
+  
+
+  //initialize map on document ready
+  $(document).ready(function(){
+      var latlng = new google.maps.LatLng(53.345300,-6.275769); //you can use any location as center on map startup
+      var myOptions = {
+        zoom: 9,
+        center: latlng,
+        mapTypeControl: true,
+        navigationControl: true,
+      };
+      map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+	  geocoder = new google.maps.Geocoder();
+      google.maps.event.addListener(map, 'click', function(){
+           if(infowindow){
+             infowindow.setMap(null);
+             infowindow = null;
+           }
+      });
+  });
+    
+    
+    
+    if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showposition);}
+    
+  
+     
+        function showposition(position) {
+        
+            var map = new google.maps.Map(document.getElementById('map_canvas'), {
+          center: {lat: 53.345300, lng: -6.275769},
+          zoom: 11});
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;
+            latlon = new google.maps.LatLng(lat,lon)
+            var marker = new
+            google.maps.Marker({position:latlon,
+                                icon:'ball.png',
+                                animation: google.maps.Animation.BOUNCE, title:"You are here."});
+            //marker.setMap(map);
+            //marker.setAnimation(4);
+            radius_circle = new google.maps.Circle({
+  						center: latlon,
+  						radius: 1000,
+  						clickable: false,
+						map: map
+  					});
+            //if (radius_circle) map.fitBounds(radius_circle.getBounds());
+            
+            $.getJSON('../static/routes_and_stops.json', function(data){
+            //console.log('=>' +data);
+        for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        var pos = new google.maps.LatLng(item.latitude, item.longitude);  
+        //var title = item.stopid;
+        var distance_from_location = google.maps.geometry.spherical.computeDistanceBetween(latlon, pos);
+            //console.log(">=" + latlon);
+            //console.log(">=" + distance_from_location);
+            if(distance_from_location <= 200){
+                var markers = new google.maps.Marker({position: pos,
+                                                    map:map,
+                                                    });
+                
+                markers.setMap(map); 
+            }
+           
+        }(data[i]);
+        
+    }); 
+             
+        }
+    
+
+    
+       
+   
+  	
+   
+    
+</script>
+    
+
+    
