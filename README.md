@@ -3,6 +3,12 @@ The folder named dbus is my own work code. My resposibilities were that:
   1. Analyzed historical data to select a model to perdict dublin bus arrival time for each route
   2. Worked on displaying location and found around location 500m all stopID
   3. Showed all StopID informaiton once clicking on stopID sign on Google map
+  
+  My work outcome:
+  ![](webapp2.png)
+  
+  ![](webapp3.png)
+  
 
 
 
